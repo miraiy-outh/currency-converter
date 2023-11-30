@@ -9,12 +9,13 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 import { useSelector } from '../hooks/redux-hooks';
-import { valutesInfoSelector } from '../services/selectors/valute-selectors';
+import { valuteBaseSelector, valutesInfoSelector } from '../services/selectors/valute-selectors';
 import { FavoriteButton } from './FavoriteButton';
 
 
 export function Table() {
     const valutes = useSelector(valutesInfoSelector)
+    const base = useSelector(valuteBaseSelector)
 
     return (
         <TableContainer component={Paper}>
@@ -29,7 +30,7 @@ export function Table() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {valutes.map((valute) => (
+                    {valutes.filter((valute) => valute.CharCode !== base).map((valute) => (
                         <TableRow
                             key={valute.NumCode}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

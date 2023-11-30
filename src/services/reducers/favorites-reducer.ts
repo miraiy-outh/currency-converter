@@ -1,7 +1,7 @@
 import { FAVORITES_ADD, FAVORITES_DELETE } from "../constants/favorites-constants"
 
 type TFavoriteState = {
-    favorites: Array<string>
+    favorites: string[]
 }
 
 type TFavoritesAddAction = {

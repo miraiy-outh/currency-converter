@@ -1,22 +1,29 @@
+import { calculateValueAndNominal } from "../../utils/calculate-value-and-nominal"
 import { TValuteInfo } from "../cbr-daily"
-import { IS_ERROR_SET, IS_LOADING_SET, VALUTE_BASE_CHANGE, VALUTE_SET } from "../constants/valute-info-constants"
+import { IS_ERROR_SET, IS_LOADING_SET, VALUTE_BASE_CHANGE, VALUTE_CODES_SET, VALUTE_SET } from "../constants/valute-info-constants"
 
 type TValuteState = {
     base: string,
-    valutes: TValuteInfo[]
-    isLoading: boolean
+    valuteCodes: string[],
+    valutes: TValuteInfo[],
+    isLoading: boolean,
     isError: boolean
+    isValuteCodesLoaded: boolean
 }
 
 type TValuteSetAction = {
     type: typeof VALUTE_SET,
-    base: string
     valutes: TValuteInfo[]
 }
 
 type TValuteBaseChangeAction = {
     type: typeof VALUTE_BASE_CHANGE,
     charCode: string
+}
+
+type TValuteCodesSetAction = {
+    type: typeof VALUTE_CODES_SET,
+    valuteCodes: string[]
 }
 
 type TIsLoadingSetAction = {
@@ -29,26 +36,31 @@ type TIsErrorSetAction = {
     isError: boolean
 }
 
-type TValuteActions = TValuteSetAction | TValuteBaseChangeAction | TIsLoadingSetAction | TIsErrorSetAction
+type TValuteActions = TValuteSetAction | TValuteBaseChangeAction | TIsLoadingSetAction | TIsErrorSetAction | TValuteCodesSetAction
 
 const defaultState: TValuteState = {
     base: 'RUB',
+    valuteCodes: ['RUB'],
     valutes: [],
     isLoading: true,
-    isError: false
+    isError: false,
+    isValuteCodesLoaded: false
 }
 
 export function valuteReducer(state = defaultState, action: TValuteActions) {
     switch (action.type) {
 
         case VALUTE_SET: {
-            const baseValuteInfo = action.valutes.find(valute => valute.CharCode === action.base);
+            const baseValuteInfo = action.valutes.find(valute => valute.CharCode === state.base);
             if (!baseValuteInfo) return state
             const { Value } = baseValuteInfo
             const newValutes = action.valutes.map((valute) => {
+                const { value, nominal } = calculateValueAndNominal(valute.Value / Value, valute.Nominal)
+
                 return {
                     ...valute,
-                    Value: Math.round((valute.Value / Value) * 10000) / 10000
+                    Value: value,
+                    Nominal: nominal
                 }
             })
             return {
@@ -59,6 +71,12 @@ export function valuteReducer(state = defaultState, action: TValuteActions) {
         case VALUTE_BASE_CHANGE: {
             return {
                 ...state, base: action.charCode
+            }
+        }
+
+        case VALUTE_CODES_SET: {
+            return {
+                ...state, valuteCodes: action.valuteCodes
             }
         }
 
