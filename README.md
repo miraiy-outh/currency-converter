@@ -7,6 +7,8 @@
 - TypeScript
 - Redux
 - Material UI
+## Хостинг
+Попробовать можно здесь [https://currency-convertation.web.app/](https://currency-convertation.web.app/)
 
 ## Установка и запуск
 
@@ -18,6 +20,5 @@ npm install
 ```bash
 npm start
 ```
-
-Открыть [http://localhost:3000](http://localhost:3000) чтобы посмотреть в браузере.
+Открыть локально [http://localhost:3000](http://localhost:3000)
 
