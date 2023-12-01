@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { Select } from './components/Select';
+import { BaseSelect } from './components/BaseSelect';
 import { Table } from './components/Table';
-import { CircularProgress, Alert, TextField, FormControl, InputLabel } from '@mui/material';
+import { CircularProgress, Alert, Stack } from '@mui/material';
 import { getCurrentCourse } from './services/cbr-daily';
 import { useDispatch, useSelector } from './hooks/redux-hooks';
 import { IS_ERROR_SET, IS_LOADING_SET, VALUTE_CODES_SET, VALUTE_SET } from './services/constants/valute-info-constants';
-import { AppHeader } from './App.styled';
-import { isErrorSelector, isLoadingSelector, isValuteCodesLoadedSelector, valuteBaseSelector } from './services/selectors/valute-selectors';
+import { isErrorSelector, isLoadingSelector, isValuteCodesLoadedSelector } from './services/selectors/valute-selectors';
+import { ConvertSelect } from './components/ConvertSelect';
 
 function App() {
   const dispatch = useDispatch()
@@ -35,13 +35,22 @@ function App() {
   }, [])
   return (
     <>
-      <AppHeader>
-        <FormControl sx={{ m: 1, minWidth: 200 }}>
-          <TextField type="number" id="outlined-basic" label="Введите сумму" variant="outlined" />
-        </FormControl>
-        <Select />
-        {isLoading ? <CircularProgress /> : null}
-      </AppHeader>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        spacing={2}>
+        <Stack
+          direction="row"
+          justifyContent="start"
+          alignItems="center"
+          spacing={2}
+        >
+          <BaseSelect />
+          {isLoading ? <CircularProgress /> : null}
+        </Stack>
+        <ConvertSelect />
+      </Stack>
       {isError ? <Alert severity="error">Ошибка загрузки данных</Alert> : <Table />}
     </>
   );
